@@ -1,6 +1,6 @@
 {
   "name": "novasia-sea-yield",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Dependency-free rental yield scenario calculator with explicit cost and tax assumptions. CommonJS, ESM and browser support.",
   "type": "commonjs",
   "main": "index.js",

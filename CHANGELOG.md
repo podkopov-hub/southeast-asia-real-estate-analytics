@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.0.1 — 2026-10-27
+
+Restore the NovAsia ecosystem and research resource links in the published README. Calculation code and API are unchanged from 2.0.0.
+
 ## 2.0.0 — 2026-10-27
 
 Breaking change: expense rates, tax rate, tax basis, currency, acquisition costs and annual fixed costs must be supplied explicitly. TH/ID/KH are display labels only. Removed the unsupported automatic country tax/expense presets and `REGION_DEFAULTS` export. Use `REGIONS` for labels.
