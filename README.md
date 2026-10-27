@@ -138,7 +138,7 @@ Related NovAsia resources are listed below so readers can explore the wider proj
 | --- | --- |
 | NovAsia property guides and tools | [NovAsia](https://novasia.estate/) |
 | Company open-source profile | [NovAsia Estate on GitHub](https://github.com/novasia-estate/) |
-| Open browser utilities | [Price/area normalizer, payment planner and CSV cleaner](https://novasia-estate.github.io/open-tools/) |
+| Open browser utilities | [Price/area normalizer, payment planner and CSV cleaner](https://tools.novasia.estate/) |
 | Python package | [novasia-proptech on PyPI](https://pypi.org/project/novasia-proptech/) |
 | Dataset repository | [Southeast Asia property net yield benchmark on Hugging Face](https://huggingface.co/datasets/novasia-estate/southeast-asia-property-net-yield-benchmark) |
 | Research files | [OSF project files](https://osf.io/bf39h/files/9qpcf) |
