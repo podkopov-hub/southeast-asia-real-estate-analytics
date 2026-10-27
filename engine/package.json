@@ -1,0 +1,25 @@
+{
+  "name": "southeast-asia-real-estate-analytics",
+  "version": "1.0.8",
+  "description": "Enterprise-grade real estate analytics, net rental yield calculators, and due diligence core for SE Asia.",
+  "main": "engine/calculator.js",
+  "scripts": {
+    "test": "node -e \"const {calculateNetYield} = require('./engine/calculator'); console.log(calculateNetYield({propertyPrice: 200000, grossAnnualRent: 22000, region: 'TH'}));\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/novasia-estate/southeast-asia-real-estate-analytics"
+  },
+  "keywords": [
+    "real-estate",
+    "proptech",
+    "southeast-asia",
+    "thailand-property",
+    "bali-villas",
+    "rental-yield",
+    "novasia"
+  ],
+  "author": "NovAsia Estate Analytics <info@novasia.estate> (https://novasia.estate/)",
+  "license": "MIT",
+  "homepage": "https://novasia.estate/"
+}
