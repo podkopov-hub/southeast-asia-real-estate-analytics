@@ -1,0 +1,33 @@
+{
+  "name": "novasia-sea-yield",
+  "version": "2.0.0",
+  "description": "Dependency-free rental yield scenario calculator with explicit cost and tax assumptions. CommonJS, ESM and browser support.",
+  "type": "commonjs",
+  "main": "index.js",
+  "module": "index.mjs",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.mjs",
+      "require": "./index.js",
+      "default": "./index.js"
+    }
+  },
+  "unpkg": "index.js",
+  "jsdelivr": "index.js",
+  "files": ["index.js", "index.mjs", "index.d.ts", "README.md", "LICENSE", "CHANGELOG.md", "examples/basic.cjs"],
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "build:demo": "node scripts/build-demo.cjs",
+    "prepublishOnly": "npm test"
+  },
+  "engines": { "node": ">=22" },
+  "repository": { "type": "git", "url": "git+https://github.com/podkopov-hub/southeast-asia-real-estate-analytics.git" },
+  "homepage": "https://podkopov-hub.github.io/southeast-asia-real-estate-analytics/",
+  "bugs": { "url": "https://github.com/podkopov-hub/southeast-asia-real-estate-analytics/issues" },
+  "keywords": ["rental-yield", "cash-flow", "scenario-analysis", "real-estate", "novasia"],
+  "author": "NovAsia <info@novasia.estate> (https://novasia.estate/)",
+  "license": "MIT",
+  "publishConfig": { "registry": "https://registry.npmjs.org/", "access": "public" }
+}

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'">
+  <title>Rental Yield Scenario Calculator — NovAsia SEA Yield</title>
+  <meta name="description" content="Compare rental income, acquisition costs, management, maintenance and explicit tax assumptions. Free open-source scenario calculator by NovAsia.">
+  <link rel="canonical" href="https://podkopov-hub.github.io/southeast-asia-real-estate-analytics/">
+  <style>
+    :root{color-scheme:dark;--bg:#0b211b;--panel:#13372b;--gold:#e0bd73;--text:#f3f1e9;--muted:#bccdc4;--line:#3e6150}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,sans-serif}main{max-width:1050px;margin:auto;padding:32px 20px 60px}a{color:var(--gold)}header p{max-width:760px}h1{font-size:clamp(29px,5vw,44px);line-height:1.15;margin:14px 0;color:var(--gold)}h2{font-size:23px;line-height:1.3}.eyebrow{font-size:13px;letter-spacing:.1em;font-weight:700;color:var(--gold)}.muted,small{color:var(--muted)}.notice{padding:15px 18px;border-left:3px solid var(--gold);background:var(--panel);border-radius:5px}.layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:24px;margin-top:28px}.panel{padding:24px;border:1px solid var(--line);border-radius:18px;background:var(--panel);min-width:0}.panel h2{margin-top:0}.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 16px}label{display:block;font-weight:600;font-size:14px}input,select{display:block;width:100%;min-width:0;min-height:46px;margin-top:6px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text);padding:9px;font:inherit}input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}button{min-height:48px;border:0;border-radius:9px;padding:12px 20px;background:var(--gold);color:#10291f;font:700 16px system-ui;cursor:pointer;margin-top:24px;width:100%}.metric{margin:18px 0}.metric span{display:block;color:var(--muted);font-size:14px}.metric strong{font-size:29px;font-variant-numeric:tabular-nums;color:var(--gold)}dl{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px 12px;font-size:14px}dt,dd{margin:0}dd{text-align:right;font-variant-numeric:tabular-nums}summary{cursor:pointer;color:var(--gold);font-weight:600}.error{color:#ffb8ac}.links{display:flex;flex-wrap:wrap;gap:16px}footer{border-top:1px solid var(--line);padding-top:20px;margin-top:32px;font-size:14px}[hidden]{display:none!important}@media(max-width:760px){.layout{grid-template-columns:1fr}.panel{padding:20px}main{padding-top:22px}}@media(max-width:420px){.fields{grid-template-columns:1fr}}@media print{body{background:white;color:black}.panel,.notice{background:white;border:1px solid #aaa}h1,.metric strong{color:black}button,.links{display:none}.layout{display:block}.panel{break-inside:avoid;margin-top:20px}}
+  </style>
+  <script src="./engine.js" defer></script>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">NOVASIA · OPEN-SOURCE TOOLS</div>
+    <h1>Rental yield scenario calculator</h1>
+    <p>See what remains after acquisition costs, annual expenses and your chosen tax assumption. Every input stays in this browser.</p>
+    <p class="notice"><strong>Illustrative scenario, not market data.</strong> Selecting a country changes its label only. The example rates below are not statutory tax rates or verified local operating costs.</p>
+    <nav class="links" aria-label="Tool resources">
+      <a href="https://github.com/podkopov-hub/southeast-asia-real-estate-analytics">Source and methodology</a>
+      <a href="https://www.npmjs.com/package/novasia-sea-yield">Install the package</a>
+      <a href="https://novasia.estate/rental-yield-property-in-asia/">NovAsia buyer guide</a>
+    </nav>
+  </header>
+  <div class="layout">
+    <section class="panel" aria-labelledby="inputs-title">
+      <h2 id="inputs-title">Your annual scenario</h2>
+      <p class="muted">Use one currency for all amounts. Enter zero explicitly for costs you intentionally exclude.</p>
+      <form id="scenario-form">
+        <div class="fields">
+          <label>Currency label<select name="currency"><option>USD</option><option>THB</option><option>IDR</option><option>EUR</option></select></label>
+          <label>Market label<select name="region"><option value="TH">Thailand</option><option value="ID">Indonesia / Bali</option><option value="KH">Cambodia</option></select></label>
+          <label>Property price<input name="propertyPrice" type="number" min="0.01" step="0.01" value="185000" required></label>
+          <label>Additional acquisition costs<input name="acquisitionCosts" type="number" min="0" step="0.01" value="15000" required></label>
+          <label>Gross annual rent<input name="grossAnnualRent" type="number" min="0" step="0.01" value="19000" required></label>
+          <label>Fixed annual CAM / service charge<input name="annualCamFee" type="number" min="0" step="0.01" value="1200" required></label>
+          <label>Other annual costs<input name="annualOtherCosts" type="number" min="0" step="0.01" value="500" required></label>
+          <label>Management (% of annual rent)<input name="managementFeeRate" type="number" min="0" max="100" step="0.01" value="20" required></label>
+          <label>Maintenance reserve (% of rent)<input name="maintenanceReserveRate" type="number" min="0" max="100" step="0.01" value="5" required></label>
+          <label>Assumed tax rate (%)<input name="taxRate" type="number" min="0" max="100" step="0.01" value="10" required></label>
+          <label>Assumed tax base<select name="taxBase"><option value="operating-profit">Positive operating profit</option><option value="gross-rent">Gross rent</option></select></label>
+        </div>
+        <button type="submit" disabled>Calculate this scenario</button>
+      </form>
+      <noscript><p>JavaScript is required to calculate. The formulas and source code are linked above. Form submission is disabled.</p></noscript>
+      <p id="calculation-error" class="error" role="alert" hidden></p>
+    </section>
+    <section class="panel" aria-labelledby="result-title">
+      <h2 id="result-title">Scenario result</h2>
+      <div id="result" role="status" aria-live="polite" aria-atomic="true">
+        <p id="result-context" class="muted"></p>
+        <div class="metric"><span>Net annual yield on total acquisition cost</span><strong id="net-yield">—</strong></div>
+        <div class="metric"><span>Annual net income after the supplied deductions</span><strong id="net-income">—</strong></div>
+        <dl>
+          <dt>Total acquisition cost</dt><dd id="cost-basis">—</dd>
+          <dt>Gross annual yield</dt><dd id="gross-yield">—</dd>
+          <dt>Management fee</dt><dd id="management-cost">—</dd>
+          <dt>Maintenance reserve</dt><dd id="reserve-cost">—</dd>
+          <dt>Fixed annual CAM</dt><dd id="cam-cost">—</dd>
+          <dt>Other annual costs</dt><dd id="other-cost">—</dd>
+          <dt>Scenario tax</dt><dd id="tax-cost">—</dd>
+          <dt>Simple payback</dt><dd id="payback">—</dd>
+        </dl>
+      </div>
+      <p><small>Simple payback assumes unchanged annual income. It ignores lease expiry, resale, financing, inflation and future changes. A lease can expire before this period. A nonpositive income has no positive payback period.</small></p>
+      <details><summary>What this calculation includes</summary><p>Acquisition price plus additional purchase costs form the yield denominator. Management and reserve are fractions of gross rent. Fixed costs are deducted once per year. The selected tax scenario uses either gross rent or positive operating profit. There are no country presets or live forecasts.</p></details>
+    </section>
+  </div>
+  <footer>
+    <p>This tool does not determine legal ownership, current availability, tax residency, lawful deductions or an investment recommendation. Validate inputs for your transaction. No data is submitted, stored or tracked by this calculator.</p>
+    <p>NovAsia SEA Yield 2.0.0 · MIT licensed · <a href="https://github.com/podkopov-hub/southeast-asia-real-estate-analytics/issues">Report a calculation issue</a></p>
+  </footer>
+</main>
+<script>
+'use strict';
+document.addEventListener('DOMContentLoaded', function () {
+  const form = document.getElementById('scenario-form');
+  const error = document.getElementById('calculation-error');
+  function calculate() {
+    try {
+      if (!window.NovAsiaYield) throw new Error('The calculation engine did not load. Reload the page or use the source package.');
+      const values = new FormData(form), input = {};
+      for (const field of ['currency', 'region', 'taxBase']) input[field] = values.get(field);
+      for (const field of ['propertyPrice', 'acquisitionCosts', 'grossAnnualRent', 'annualCamFee', 'annualOtherCosts']) input[field] = Number(values.get(field));
+      for (const field of ['managementFeeRate', 'maintenanceReserveRate', 'taxRate']) input[field] = Number(values.get(field)) / 100;
+      const result = window.NovAsiaYield.calculateNetYield(input);
+      const amount = n => new Intl.NumberFormat('en', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(n) + ' ' + result.currency;
+      const text = (id, value) => { document.getElementById(id).textContent = value; };
+      text('result-context', result.market + ' · user-supplied assumptions · ' + result.currency);
+      text('net-yield', result.metrics.netYield.toFixed(2) + '%');
+      text('net-income', amount(result.metrics.annualNetIncome));
+      text('cost-basis', amount(result.costBasis));
+      text('gross-yield', result.metrics.grossYield.toFixed(2) + '%');
+      for (const [id, key] of [['management-cost', 'managementFee'], ['reserve-cost', 'maintenanceReserve'], ['cam-cost', 'camFee'], ['other-cost', 'otherCosts'], ['tax-cost', 'estimatedTax']]) text(id, amount(result.itemizedDeductions[key]));
+      text('payback', result.metrics.paybackPeriodYears === null ? 'Not applicable' : result.metrics.paybackPeriodYears.toFixed(1) + ' years');
+      error.hidden = true;
+      document.getElementById('result').hidden = false;
+    } catch (exception) {
+      error.textContent = exception.message;
+      error.hidden = false;
+      document.getElementById('result').hidden = true;
+    }
+  }
+  form.addEventListener('submit', function (event) { event.preventDefault(); if (form.reportValidity()) calculate(); });
+  form.querySelector('button').disabled = !window.NovAsiaYield;
+  calculate();
+});
+</script>
+</body>
+</html>

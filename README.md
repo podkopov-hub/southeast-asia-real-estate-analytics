@@ -1,70 +1,131 @@
-# Southeast Asia Real Estate Analytics & Due Diligence Core
+# NovAsia SEA Yield
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D16.0.0-green.svg)](https://nodejs.org/)
-[![Platform](https://img.shields.io/badge/platform-Thailand%20|%20Indonesia%20|%20Cambodia-orange.svg)](https://novasia.estate/)
+An open-source **rental yield scenario calculator** for Node.js and the browser. Zero runtime dependencies. CommonJS, ESM and TypeScript declarations included.
 
-Enterprise-grade data processing pipelines, net rental yield calculators, leasehold amortization models, and legal contract risk frameworks tailored for emerging Southeast Asian real estate markets (Thailand, Indonesia/Bali, and Cambodia).
+Compare the same annual income and expense assumptions across a property shortlist. Currency and region are labels: the library never selects a tax rule, invents operating costs or converts currency.
 
-Maintained by the engineering and data science team at **[NovAsia Estate](https://novasia.estate/)**.
+[Try the interactive calculator](https://podkopov-hub.github.io/southeast-asia-real-estate-analytics/) · [npm package](https://www.npmjs.com/package/novasia-sea-yield) · [Report an issue](https://github.com/podkopov-hub/southeast-asia-real-estate-analytics/issues)
 
----
+## Install
 
-## 🏛️ Official Research & Open Science Registry (OSF)
+```bash
+npm install novasia-sea-yield@2
+```
 
-Our quantitative valuation models, spatial mapping methodologies, and legal risk assessment frameworks are backed by peer-referenced open-science datasets published via the Open Science Framework:
+Node.js 22 or newer. No API key, account, tracking or network request is required by the calculation code.
 
-* **Primary Property Metrics & Raw Data Files:** [OSF Research Repository](https://osf.io/bf39h/files/9qpcf)
-* **Valuation & Due Diligence Risk Storage:** [OSF Valuation Archive](https://osf.io/7wcbn/files/xn29d)
-* **Technical Methodology & Calculation Wiki:** [OSF Project Methodology Wiki](https://osf.io/7wcbn/wiki?wiki=xjd5n)
----
-
-## 📊 Core Architecture & Calculation Modules
-
-Standard Western gross-to-net real estate formulas fail in Southeast Asia due to local statutory taxes, leasehold degradation laws, and complex common area maintenance (CAM) structures. This repository provides standardized programmatic interfaces to compute accurate returns.
-
-### 1. Net Rental Yield & Tax Engine (`/engine`)
-Accounts for property acquisition costs, gross rental income, regional withholding taxes (TH, ID, KH), short-term management commissions, and sinking/maintenance reserves.
+## Quick start
 
 ```javascript
-const { calculateNetYield } = require('./engine/calculator');
+const { calculateNetYield } = require('novasia-sea-yield');
 
-const metrics = calculateNetYield({
+const result = calculateNetYield({
+  currency: 'USD',
+  region: 'TH',
   propertyPrice: 185000,
-  grossAnnualRent: 19500,
-  region: 'TH', // 'TH' (Thailand), 'ID' (Bali), 'KH' (Cambodia)
-  annualCamFee: 1200
-  ---
-
-### 📥 Блок 3 из 3 (Вставь в самый конец):
-```markdown
----
-
-## 📦 Official Distribution Packages & Ecosystem
-
-Our models are packaged for seamless integration across various developer environments:
-
-* **Node.js NPM Package:** [novasia-sea-yield on npm](https://www.npmjs.com/package/novasia-sea-yield)
-* **Python SDK & Spatial Pipeline:** [novasia-proptech on PyPI](https://pypi.org/project/novasia-proptech/)
-* **Empirical Market Benchmarks:** [HuggingFace Dataset Repository](https://huggingface.co/datasets/novasia-estate/southeast-asia-property-net-yield-benchmark)
-
----
-
-## 🗺️ Geographic & Market Coverage
-
-* **Thailand:** Pattaya, Phuket, Bangkok, Chiang Mai (Condo Freehold & Thai Quota regulations, CAM fee standardization).
-* **Indonesia (Bali):** Canggu, Seminyak, Uluwatu, Ubud (Hak Pakai / Hak Sewa leasehold structuring, tropical villa depreciation).
-* **Cambodia:** Phnom Penh, Sihanoukville (Borey property titles, foreign ownership quotas).
-
-For live interactive investment tools, comprehensive market reports, and property listings, visit the [NovAsia Investment Portal](https://novasia.estate/).
-
----
-
-## 📄 License
-
-This project is open-source software licensed under the [MIT License](LICENSE). 
-
-© 2026 [NovAsia Estate](https://novasia.estate/). All rights reserved.
+  acquisitionCosts: 15000,
+  grossAnnualRent: 19000,
+  annualCamFee: 1200,
+  annualOtherCosts: 500,
+  managementFeeRate: 0.20,
+  maintenanceReserveRate: 0.05,
+  taxRate: 0.10,
+  taxBase: 'operating-profit'
 });
 
-console.log(metrics);
+console.log(result.metrics);
+// {
+//   grossYield: 9.5,
+//   netYield: 5.65,
+//   annualNetIncome: 11295,
+//   operatingIncome: 12550,
+//   paybackPeriodYears: 17.7
+// }
+```
+
+**Every number above is synthetic.** In particular, 10% is an illustrative caller assumption, not a statement of Thai tax law, withholding tax or the liability of any investor.
+
+ESM:
+
+```javascript
+import { calculateNetYield } from 'novasia-sea-yield';
+```
+
+Browser, pinned to a release:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/novasia-sea-yield@2.0.0/index.js"></script>
+<script>
+  // Pass the same explicit scenario object as in the Node.js example.
+  // const result = NovAsiaYield.calculateNetYield(scenario);
+</script>
+```
+
+## Inputs
+
+All fields are required. Enter zero explicitly when a cost or rate is intentionally excluded from your scenario; missing values are errors. Amounts must be finite, nonnegative numbers with at most two decimals, all in the same currency. `propertyPrice` must be positive.
+
+| Field | Meaning |
+| --- | --- |
+| `propertyPrice` | Purchase price in the chosen currency |
+| `acquisitionCosts` | Additional purchase costs included in the denominator |
+| `grossAnnualRent` | Annual rent assumption supplied by the caller; zero is valid |
+| `annualCamFee` | Fixed annual common-area/maintenance charge |
+| `annualOtherCosts` | Other annual costs not already counted elsewhere |
+| `managementFeeRate` | Fraction of gross annual rent; 0.20 = 20% |
+| `maintenanceReserveRate` | Additional reserve as a fraction of gross annual rent |
+| `taxRate` | Caller-supplied fraction, 0–1; no statutory rate is built in |
+| `taxBase` | `gross-rent` or `operating-profit`, selected by the caller |
+| `currency` | Uppercase three-letter label, e.g. USD, THB, IDR; no FX conversion |
+| `region` | TH, ID or KH; display label only, identical arithmetic |
+
+Avoid counting the same expense in CAM, reserve and other costs. Negative costs, strings, NaN, infinity, unknown regions and missing assumptions are rejected.
+
+## Methodology
+
+```text
+cost basis = property price + acquisition costs
+management fee = annual rent × management rate
+maintenance reserve = annual rent × reserve rate
+operating income = annual rent − management fee − reserve − CAM − other costs
+taxable amount = annual rent OR max(operating income, 0), as explicitly selected
+estimated tax = taxable amount × supplied tax rate
+net annual income = operating income − estimated tax
+gross yield (%) = annual rent / cost basis × 100
+net yield (%) = net annual income / cost basis × 100
+simple payback (years) = cost basis / net annual income, only if income > 0
+```
+
+The engine keeps intermediate precision and rounds displayed amounts/yields to two decimals and simple payback to one. Rounded deduction lines can differ by a cent from a total calculated before rounding. This is scenario arithmetic, not a tax filing or settlement calculation.
+
+Simple payback assumes unchanged annual income. It does **not** account for lease expiry, resale proceeds, inflation, financing, capital appreciation, vacancy changes or reinvestment. It is not an amortization schedule, forecast or promise of a return. A leasehold term can be shorter than the displayed payback; that question must be assessed separately.
+
+No empirical dataset, live inventory, tax-law service or external research registry is consumed by this code. A region label does not establish ownership rights, expenses, tax residency or applicable deductions. Verify those inputs for the specific transaction and taxpayer.
+
+For buyer-oriented context, see [NovAsia's guide to rental yield and ownership costs](https://novasia.estate/rental-yield-property-in-asia/). The guide provides context; it is not a machine-readable feed of current statutory rates.
+
+## Version 1 migration
+
+Version 2 intentionally removes hidden country defaults. Supply every expense and tax assumption explicitly, plus currency and acquisition costs. Replace `customManagementFee` with `managementFeeRate` and `customTaxRate` with `taxRate`; these no longer fall back to a country rate. Use `REGIONS` instead of `REGION_DEFAULTS`. The engine class accepts `{ currency: 'USD' }`; `baseCurrency` was removed because no conversion is performed. Outputs no longer contain a generated timestamp. Yield now uses total acquisition cost, not just purchase price.
+
+The repository import `require('./engine/calculator')` remains available as a compatibility path, with the same version 2 input requirements. Existing 1.x npm versions are not overwritten.
+
+## Development
+
+```bash
+npm test
+npm run build:demo
+node examples/basic.cjs
+```
+
+Tests assert a hand-worked example, both tax bases, zero-income/loss scenarios, invalid inputs, monetary boundaries, region invariance, deterministic output and CJS/ESM/browser loading. The demo uses the exact same engine, copied by `build:demo` without bundling or dependencies.
+
+## По-русски
+
+Открытый калькулятор сценарной доходности аренды от [NovAsia](https://novasia.estate/). Расходы, налог и способ его расчёта задаёт пользователь. Выбор Таиланда, Бали или Камбоджи меняет только подпись, а не подставляет «местную ставку».
+
+Пример выше содержит условные числа. Результат не подтверждает цену, наличие объекта, право владения, налоговые обязательства или будущую доходность. Срок аренды земли, кредит, продажу объекта и изменение денежного потока нужно оценивать отдельно.
+
+## License
+
+MIT. See [LICENSE](LICENSE). Maintained by NovAsia; contributions and reproducible bug reports are welcome.
