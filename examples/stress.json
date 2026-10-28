@@ -1,0 +1,36 @@
+{
+  "base": {
+    "currency": "USD",
+    "region": "TH",
+    "propertyPrice": 185000,
+    "acquisitionCosts": 15000,
+    "grossAnnualRent": 24000,
+    "annualCamFee": 1200,
+    "annualOtherCosts": 500,
+    "managementFeeRate": 0.2,
+    "maintenanceReserveRate": 0.05,
+    "taxRate": 0.1,
+    "taxBase": "operating-profit"
+  },
+  "annualDebtService": 6000,
+  "scenarios": [
+    {
+      "name": "Base",
+      "occupancy": 0.7,
+      "rentMultiplier": 1,
+      "fixedCostMultiplier": 1
+    },
+    {
+      "name": "Vacancy shock",
+      "occupancy": 0.35,
+      "rentMultiplier": 0.85,
+      "fixedCostMultiplier": 1.25
+    },
+    {
+      "name": "Stronger demand",
+      "occupancy": 0.9,
+      "rentMultiplier": 1.1,
+      "fixedCostMultiplier": 1
+    }
+  ]
+}

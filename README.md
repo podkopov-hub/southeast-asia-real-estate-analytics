@@ -146,3 +146,31 @@ Related NovAsia resources are listed below so readers can explore the wider proj
 | Methodology notes | [OSF project wiki](https://osf.io/7wcbn/wiki?wiki=xjd5n) |
 
 Use this repository's calculation code, tests and methodology above to reproduce its results. Consult each linked resource for its own scope, data and license.
+
+## Rental Cashflow Stress Lab — browser and repository extension
+
+**[Open Rental Cashflow Stress Lab](https://podkopov-hub.github.io/southeast-asia-real-estate-analytics/stress-lab.html)** · Built by [NovAsia Estate](https://novasia.estate/).
+
+Compare up to ten explicit occupancy, rent-level and fixed-cost scenarios. The lab calls this repository's existing engine; it retains losses and subtracts your annual debt service only after its simplified tax calculation. It adds an occupancy sensitivity table, approximate break-even thresholds, CSV and JSON exports. This is a substantive extension of this project, not a separate renamed calculator. The published npm version remains 2.0.1; these additions are available from the repository and browser demo.
+
+```js
+const Stress = require('./docs/stress.js');
+const input = require('./examples/stress.json');
+const report = Stress.compare(input.base, input.annualDebtService, input.scenarios);
+console.log(report.rows.map(r => [r.name, r.netAfterDebt]));
+// Base: 3810; Vacancy shock: -3093; Stronger demand: 8508
+```
+
+In this extension `base.grossAnnualRent` means annual rent **at full occupancy**. For each scenario it is multiplied by the rent-level multiplier and then occupancy; the effective collected rent is passed to the core engine. Fixed-cost multipliers apply to CAM and other annual fixed costs only. Rates are unchanged and every assumption is explicit. The default fixture is synthetic, not evidence of any country's rents, costs or taxes.
+
+Break-even solves for nonnegative cash flow after annual debt service under the same simplified tax base. With `F = CAM + other fixed costs`, `D = debt service`, `k = 1 − management rate − reserve rate`, and `t = tax rate`:
+
+- Gross-rent tax: required collected rent is `(F + D) / (k − t)` when the retained margin is positive.
+- Operating-profit tax, t < 1: required collected rent is `(F + D / (1 − t)) / k` when k > 0.
+- Impossible margins, zero capacity and 100% tax cases are reported explicitly, not converted to a guaranteed yield. Zero fixed costs and zero debt can break even at zero rent.
+
+Thresholds use continuous arithmetic before cent rounding; displayed percentages are approximate. More than 100% occupancy means the required rent exceeds the entered capacity. A zero-profit plateau is not a positive return. Annual debt service is an aggregate cash outflow: no amortization, interest tax deduction, depreciation, resale, appreciation, seasonality or equity-return model is implied. All scenarios share the same currency and acquisition-cost denominator.
+
+Run `npm test` and `npm run build:demo`. Source extension: `docs/stress.js`; three synthetic scenarios: `examples/stress.json`. Exported JSON retains all assumptions and detailed core results. Formula-like text labels are escaped in CSV; numbers including negative cash flow remain numeric.
+
+[Payment Milestone Studio](https://github.com/novasia-estate/payment-milestone-studio) helps schedule acquisition installments, a different stage of the workflow. [Synthetic Hugging Face scenarios](https://huggingface.co/datasets/novasia-estate/southeast-asia-property-net-yield-benchmark) help reproduce simple yield arithmetic. For the publisher and property research, visit [NovAsia Estate](https://novasia.estate/).
